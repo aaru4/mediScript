@@ -27,18 +27,15 @@ const writeFile = (location, data) =>
         const program = await readFile(location)
         console.log(program)
     } else {
-        // code
-    }
+        const lexer = new Lexer(program)
+            try {
+                lexer.scanTokens()
+            } catch (err) {
+                console.log(err)
+                process.exit(1)
+            } finally {
+                if (debug) await writeFile('tokens.json', JSON.stringify(lexer.tokens, null, 2))
+            }
+        }
 })()
 
-const program = await readFile(location)
-
-const lexer = new Lexer(program)
-try {
-    lexer.scanTokens()
-} catch (err) {
-    console.log(err)
-    process.exit(1)
-} finally {
-    if (debug) await writeFile('tokens.json', JSON.stringify(lexer.tokens, null, 2))
-}
