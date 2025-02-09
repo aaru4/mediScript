@@ -117,6 +117,72 @@ export class Lexer {
                     new Token(TOKENS.String, String, String, this.line, this.column)
                 )      
             }
+            case '|': {
+                if (this.match('|'))
+                return this.tokens.push(
+                new Token (TOKENS.Or, '||', '||', this.line, this.column)
+                )
+            }
+            case '>': {
+                if (this.match('='))
+                    return this.tokens.push(
+                        new Token(TOKENS.Gte, '>=', '>=', this.line, this.column)
+                )
+                return this.tokens.push(
+                    new Token(TOKENS.Gt, '>', '>', this.line, this.column)
+                )
+            }
+            case '<': {
+                if (this.match('='))
+                    return this.tokens.push(
+                        new Token(TOKENS.Gte, '<=', '<=', this.line, this.column)
+                )
+                return this.tokens.push(
+                    new Token(TOKENS.Gt, '<', '<', this.line, this.column)
+                )
+            }
+            case '=': {
+                if (this.match('='))
+                return this.tokens.push(
+                new Token (TOKENS.Equiv, '==', '==', this.line, this.column)
+                )
+            }
+            case '&': {
+                if (this.match('&'))
+                return this.tokens.push(
+                new Token (TOKENS.Equiv, '&&', '&&', this.line, this.column)
+                )
+            }
+            case '!': {
+                if (this.match('='))
+                    return this.tokens.push(
+                        new Token(TOKENS.NotEquiv, '!==', '!==', this.line, this.column)
+                )
+                return this.tokens.push(
+                    new Token(TOKENS.Not, '!', '!', this.line, this.column)
+                )
+            }
+            default:
+                if (isNumber(char)) {
+                    let number = [char]
+                    while (isNumber(this.peek()) || (this.peek() == '.' && !number.includes(".")))
+                        number.push(this.advance())
+                    number = number.join("")
+                    return this.tokens.push(
+                        new Token(
+                            TOKENS.Number,
+                            number,
+                            Number(number),
+                            this.line,
+                            this.column
+                        )
+                    )
+                }
         }
     }
-}
+    match(char) {
+        if (this.peek() == char) return this.advance()
+            return false
+        }
+    }
+
