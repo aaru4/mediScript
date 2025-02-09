@@ -1,4 +1,5 @@
 import fs from 'fs';
+import { Lexer } from './lexer.js';
 
 const readFile = location => 
     new Promise((resolve, reject) =>
@@ -29,3 +30,15 @@ const writeFile = (location, data) =>
         // code
     }
 })()
+
+const program = await readFile(location)
+
+const lexer = new Lexer(program)
+try {
+    lexer.scanTokens()
+} catch (err) {
+    console.log(err)
+    process.exit(1)
+} finally {
+    if (debug) await writeFile('tokens.json', JSON.stringify(lexer.tokens, null, 2))
+}

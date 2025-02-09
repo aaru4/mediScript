@@ -28,6 +28,30 @@ export const TOKENS = {
     EOF: 'EOF'
 }
 
+export const KEYWORDS = {
+    "while": "while",
+    "if": "if",
+    "else": "else",
+    "return": "return",
+    "print": "print",
+
+    "symptom": "symptom",
+    "scan": "scan",
+    "dataset": "dataset",
+    "patient": "patient",
+    "annotation": "annotation",
+
+    "diagnose": "diagnose",
+    "treat": "treat",
+    "risk": "risk",
+    "predict": "predict",
+    "detect": "detect",
+    "train": "train",
+    "evaluate": "evaluate",
+    "anonymize": "anonymize",
+    "policy": "policy"
+}
+
 export class Token {
     constructor(type, value, content, line, column) {
         this.type = type
@@ -75,8 +99,25 @@ export class Lexer {
 
     scanToken() {
         const char = this.advance()
-
+        const isNumber = char => char >= '0' && char <= '9'
+        const isChar = char => (char >= 'A' && char <= 'Z') || (char >= 'a' && char <= 'z') || char == '='
+        const isAlphanumeric = char => isNumber(char) || isChar(char)
+        
         switch (char) {
+            case '!': {
+                // Comments
+                while (this.peek() !== '\n' && this.peek() !== '\0') this.advance()
+                return
+            }
+            case ' ':
+            case '\r': {
+                return
+            }
+            case '\n': {
+                this.line++
+                this.column = 0
+                return
+            }
             case '(':
                 return this.tokens.push(new Token(TOKENS.LeftParen, '(', '(', this.line, this.column))
             case ')':
@@ -177,7 +218,30 @@ export class Lexer {
                             this.column
                         )
                     )
+                } else if (isChar(char)) {
+                    let identifier = [char]
+                    while (isAlphanumeric(this.peek())) 
+                        identifier.push(this.advance())
+                        identifier = identifier.join('')
+                        if (Object.keys(KEYWORDS).includes(identifier))
+                            return this.tokens.push(
+                        new Token(
+                            TOKENS.Keyword,
+                            identifier,
+                            KEYWORDS[identifier],
+                            this.line,
+                            this.column
+                        )
+                    )
+                    else if (identifier == 'true' || identifier == 'false')
+                        return this.tokens.push(
+                    new Token(TOKENS.boolean, identifier, identifier == 'true')
+                    )
+                        return this.tokens.push(
+                            new Token(TOKENS.Identifier, identifier, identifier, this.line, this.column)
+                        )
                 }
+                else this.error ('Unexpecte symbol ' + char)
         }
     }
     match(char) {
