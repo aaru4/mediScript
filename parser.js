@@ -36,4 +36,29 @@ export class Parser {
             `Expected ${type} but got ${this.peekType().toString()}`
         )
     }
+
+    simple() {
+        const token = this.eat(this.peekType())
+        switch (token.type) {
+            case TOKENS.String:
+            case TOKENS.Number:
+            case TOKENS.boolean: {
+                return new Ast.Literal(token.content)
+            }
+        }
+        this.error(token, "Expected expression but got " + token)
+    }
+
+    expr() {
+        const left = this.simple()
+        return left
+    }
+    stmt() {
+        const next = this.peek()
+        switch (next.type) {
+            default: {
+                return this.expr()
+            }
+        }
+    }
 }
