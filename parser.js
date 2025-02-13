@@ -2,6 +2,21 @@ import { Ast } from './ast.js'
 import { TOKENS } from './lexer.js'
 import { EaselError } from './stdlib.js'
 
+const opOrder = {
+    '<': 0,
+    '<=': 0,
+    '>': 0,
+    '>=': 0,
+    '!==': 0,
+    '==': 0,
+    '&&': 0,
+    '||': 0,
+    '+': 1,
+    '-': 1,
+    '*': 2,
+    '/': 2
+}
+
 const isOp = type =>
     [
         TOKENS.Or,
@@ -71,17 +86,28 @@ export class Parser {
                 case TOKENS.Identifier: {
                     return new Ast.Var(token.value)
                 }
+                case TOKENS.LeftParen: {
+                    const expr = this.expr()
+                    this.eat(TOKENS.RightParen)
+                    return expr
+                }
             }
             this.error(token, "Expected expression but got " + token)
         }
 
     expr() {
-        const left = this.simple()
-        if (isOp(this.peekType()).value) {
+        let left = this.simple()
+        if (isOp(this.peekType())) {
             const op = this.eat(this.peekType()).value
-            const right = this.expr()
-            return new Ast.Binary(left, op, right)
-        }
+            let right = this.expr()
+            if (right instanceof Ast.Binary && opOrder[op] > opOrder[right.operator])
+                return new Ast.Binary(
+                    new Ast.Binary(left, op, right.left),
+                    right.operator,
+                    right.right
+                )
+            return new Ast.Binary(left, op, right) 
+            }       
         return left
     }
 
