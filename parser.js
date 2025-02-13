@@ -2,6 +2,22 @@ import { Ast } from './ast.js'
 import { TOKENS } from './lexer.js'
 import { EaselError } from './stdlib.js'
 
+const isOp = type =>
+    [
+        TOKENS.Or,
+        TOKENS.And,
+        TOKENS.Equiv,
+        TOKENS.NotEquiv,
+        TOKENS.Gt,
+        TOKENS.Gte,
+        TOKENS.Lt,
+        TOKENS.Lte,
+        TOKENS.Plus,
+        TOKENS.Minus,
+        TOKENS.Asterisk,
+        TOKENS.Slash
+    ].includes(type)
+
 export class Parser {
     constructor(tokens) {
         this.tokens = tokens
@@ -61,6 +77,11 @@ export class Parser {
 
     expr() {
         const left = this.simple()
+        if (isOp(this.peekType()).value) {
+            const op = this.eat(this.peekType()).value
+            const right = this.expr()
+            return new Ast.Binary(left, op, right)
+        }
         return left
     }
 
