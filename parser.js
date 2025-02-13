@@ -1,3 +1,4 @@
+import { Ast } from './ast.js'
 import { TOKENS } from './lexer.js'
 import { EaselError } from './stdlib.js'
 
