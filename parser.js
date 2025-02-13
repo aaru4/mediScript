@@ -42,7 +42,7 @@ export class Parser {
     }
 
     parse() {
-        while (this.peekType() !== TOKENS.EOF) continue
+        while (this.peekType() !== TOKENS.EOF) this.ast.push(this.stmt())
         return this.ast
     }
 
@@ -112,6 +112,16 @@ export class Array {
     }
 }
 
+export class Binary {
+    constructor(left, operator, right) {
+        this.type = 'Binary'
+        this.left = left
+        this.operator = operator
+        this.right = right
+    }
+}
+
 export default {
     Array,
+    Binary
 }
