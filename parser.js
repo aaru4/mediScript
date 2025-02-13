@@ -112,8 +112,34 @@ export class Parser {
     }
 
     stmt() {
+        const funcStmt = () => {
+            this.eatKeyword('diagnose')
+            const name = this.eat(TOKENS.Identifier).value
+
+            let params = []
+            if (this.peekKeyword('treat')) {
+                this.eatKeyword('treat')
+                this.eat(TOKENS.LeftParen)
+                params = this.identifierList()
+                this.eat(TOKENS.RightParen)
+            }
+
+            this.eat(TOKENS.LeftBrace)
+            let body = []
+            while (this.peekType() !== TOKENS.RightBrace) body.push(this.stmt())
+                this.eat(TOKENS.RightBrace)
+
+            return new Ast.Func(name, params, body)
+        }
         const next = this.peek()
         switch (next.type) {
+            case TOKENS.Keyword: {
+                switch(next.value) {
+                    case 'diagnose': {
+                        return funcStmt
+                    }
+                }
+            }
             default: {
                 return this.expr()
             }
