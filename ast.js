@@ -5,6 +5,15 @@ export class Literal {
     }
 }
 
+export class Var {
+    constructor(name, value) {
+        this.type = 'Var'
+        this.name = name
+        this.value = value
+    }
+}
+
 export default {
-    Literal
+    Literal,
+    Var
 }

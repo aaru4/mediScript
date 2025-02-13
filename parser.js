@@ -39,21 +39,31 @@ export class Parser {
     }
 
     simple() {
-        const token = this.eat(this.peekType())
-        switch (token.type) {
-            case TOKENS.String:
-            case TOKENS.Number:
-            case TOKENS.boolean: {
-                return new Ast.Literal(token.content)
+        let token = this.eat(this.peekType())
+            switch (token.type) {
+                case TOKENS.String:
+                case TOKENS.Number:
+                case TOKENS.boolean: {
+                    return new Ast.Literal(token.content)
+                }
+                case TOKENS.LeftBracket: {
+                    let items = []
+                    if (this.peekType() !== TOKENS.RightBracket) items = this.exprList()
+                        this.eat(TOKENS.RightBracket)
+                    return new Ast.Array(items)
+                }
+                case TOKENS.Identifier: {
+                    return new Ast.Var(token.value)
+                }
             }
+            this.error(token, "Expected expression but got " + token)
         }
-        this.error(token, "Expected expression but got " + token)
-    }
 
     expr() {
         const left = this.simple()
         return left
     }
+
     stmt() {
         const next = this.peek()
         switch (next.type) {
@@ -62,4 +72,25 @@ export class Parser {
             }
         }
     }
+
+    exprList() {
+        let exprs = []
+        exprs.push(this.expr())
+        while (this.peekType() == TOKENS.Comma) {
+            this.eat(TOKENS.Comma)
+            exprs.push(this.expr())
+        }
+        return exprs
+    }
+}
+
+export class Array {
+    constructor(value) {
+        this.type = 'Array'
+        this.value = value
+    }
+}
+
+export default {
+    Array,
 }
