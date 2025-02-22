@@ -69,6 +69,29 @@ export class Parser {
         )
     }
 
+    call() {
+        let expr = this.simple()
+        while(true) {
+            if (this.peekType == TOKENS.LeftParen) {
+                this.eat(TOKENS.LeftParen)
+                let args = []
+                if (this.peekType() !== TOKENS.RightParen) args = this.exprList()
+                    this.eat(TOKENS.RightParen)
+                    expr = new Ast.Call(expr, args)
+            } else if (this.peekType() == TOKENS.LeftBracket) {
+                this.eat(TOKENS.LeftBracket)
+                const property = this.expr()
+                this.eat(TOKENS.RightBracket)
+                expr = new Ast.Get(expr, property, true)
+            } else if (this.peekType() == TOKENS.Period) {
+                this.eat(TOKENS.Period)
+                const property = this.eat(TOKENS.Identifier).value
+                expr = new Ast.Get(expr, property)
+            } else break
+        }
+        return expr
+    }
+
     simple() {
         let token = this.eat(this.peekType())
             switch (token.type) {
@@ -114,7 +137,7 @@ export class Parser {
         }
 
     expr() {
-        let left = this.simple()
+        const left = this.call()
         if (isOp(this.peekType())) {
             const op = this.eat(this.peekType()).value
             let right = this.expr()

@@ -72,6 +72,14 @@ export class Struct {
     }
 }
 
+export class Instance {
+    constructor(name, members) {
+        this.type = 'Instance'
+        this.name = name
+        this.members = members
+    }
+}
+
 export default {
     Literal, 
     Var,
