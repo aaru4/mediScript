@@ -151,6 +151,12 @@ export class Parser {
                     case 'if': {
                         return conditionalStmt('if')
                     }
+                    case `loop`: {
+                        return forStmt()
+                    }
+                    case `prepare`: {
+                        return assignStmt()
+                    }        
                 }
             }
             default: {
@@ -200,6 +206,21 @@ export class Parser {
     }
 }
 
+const assignStmt = () => {
+    this.eatKeyword('prepare')
+    const name = this.eat(TOKENS.Identifier).value
+    if (this.peekType() == TOKENS.Period) {
+        this.eat(TOKENS.Period)
+        const property = this.eat(TOKENS.Identifier).value
+        this.eatKeyword('as')
+        const value = this.expr()
+        return new Ast.Set(name, property, value)
+    }
+    this.eatKeyword('as')
+    const value = this.expr()
+    return new Ast.Var(name, value)
+}
+
 export class Array {
     constructor(value) {
         this.type = 'Array'
@@ -241,17 +262,6 @@ const forStmt = () => {
     this.eat(TOKENS.RightBrace)
 
     return new Ast.For(id, range, body)
-    }
-
-    const next = this.peek()
-    switch (next.type) {
-        case TOKENS.Keyword: {
-            switch (next.value) {
-                case `loop`: {
-                    return forStmt()
-                }
-            }
-        }
     }
 
     const whileStmt = () => {
