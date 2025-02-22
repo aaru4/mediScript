@@ -80,6 +80,23 @@ export class Instance {
     }
 }
 
+export class Call {
+    constructor(caller, args) {
+        this.type = 'Call'
+        this.caller = caller
+        this.args = args
+    }
+}
+
+export class Get {
+    constructor(caller, property, isExpr = false) {
+        this.type = 'Get'
+        this.caller = caller
+        this.property = property
+        this.isExpr = isExpr
+    }
+}
+
 export default {
     Literal, 
     Var,
@@ -89,5 +106,6 @@ export default {
     While,
     Conditional,
     Set,
-    Struct
+    Struct,
+    Instance
 }
