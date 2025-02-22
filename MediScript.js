@@ -1,6 +1,8 @@
 import fs from 'fs';
+import { Interpreter } from './interpreter.js';
 import { Lexer } from './lexer.js';
 import { Parser } from './parser.js';
+import stdlib from './stdlib.js';
 
 const readFile = location => 
     new Promise((resolve, reject) =>
@@ -44,6 +46,13 @@ const writeFile = (location, data) =>
             console.log(err)
         } finally {
             if (debug) await writeFile('ast.json', JSON.stringify(parser.ast, null, 2))
+        }
+
+        const interpreter = new Interpreter()
+        try {
+            interpreter.run(parser.ast, stdlib) 
+        } catch (err) {
+            console.log(err)
         }
     }
 })()
