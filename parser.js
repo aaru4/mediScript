@@ -156,7 +156,10 @@ export class Parser {
                     }
                     case `prepare`: {
                         return assignStmt()
-                    }        
+                    }   
+                    case `patient`: {
+                        return assignStmt()
+                    }         
                 }
             }
             default: {
@@ -299,4 +302,14 @@ const forStmt = () => {
                 otherwise.push(conditionalStmt(this.peek().value))
         
             return new Ast.Conditional(condition, body, otherwise)
+        }
+
+        const structStmt = () => {
+            this.eatKeyword('patient')
+            const name = this.eat(TOKENS.Identifier).value
+            this.eatKeyword('has')
+            this.eat(TOKENS.LeftBrace)
+            const members = this.identifierList()
+            this.eat(TOKENS.RightBrace)
+            return new Ast.Struct(name, members)
         }
