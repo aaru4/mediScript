@@ -22,6 +22,15 @@ export class Func {
     }
 }
 
+export class For {
+    constructor(id, range, body) {
+        this.type = 'For'
+        this.id = id
+        this.range = range
+        this.body = body
+    }
+}
+
 export class Return {
     constructor(value) {
         this.type = 'Return'
@@ -33,5 +42,6 @@ export default {
     Literal,
     Var,
     Func,
-    Return
+    Return, 
+    For
 }

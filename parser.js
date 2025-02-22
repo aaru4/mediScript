@@ -145,6 +145,9 @@ export class Parser {
                     case 'diagnose': {
                         return funcStmt
                     }
+                    case 'while': {
+                        return whileStmt()
+                    }
                 }
             }
             default: {
@@ -247,3 +250,19 @@ const forStmt = () => {
             }
         }
     }
+
+    const whileStmt = () => {
+        this.eatKeyword('while')
+
+        this.eat(TOKENS.LeftParen)
+        const condition = this.expr()
+        this.eat(TOKENS.RightParen)
+
+        this.eat(TOKENS.LeftBrace)
+        let body = []
+        while (this.peekType() !== TOKENS.RightBrace) body.push(this.stmt())
+        this.eat(TOKENS.RightBrace)
+
+        return new Ast.While(condition, body)
+        }
+
