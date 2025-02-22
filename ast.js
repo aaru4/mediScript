@@ -97,6 +97,14 @@ export class Get {
     }
 }
 
+export class Unary {
+    constructor(operator, apply) {
+        this.type = 'Unary'
+        this.operator = operator
+        this.apply = apply
+    }
+}
+
 export default {
     Literal, 
     Var,
@@ -107,5 +115,8 @@ export default {
     Conditional,
     Set,
     Struct,
-    Instance
+    Instance,
+    Call, 
+    Get,
+    Unary
 }

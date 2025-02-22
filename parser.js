@@ -145,7 +145,7 @@ export class Parser {
         }
 
     expr() {
-        const left = this.call()
+        const left = this.unary()
         if (isOp(this.peekType())) {
             const op = this.eat(this.peekType()).value
             let right = this.expr()
