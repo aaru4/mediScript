@@ -46,11 +46,21 @@ export class While {
     }
 }
 
+export class Conditional {
+    constructor(condition, body, otherwise) {
+        this.type = 'Conditional'
+        this.condition = condition
+        this.body = body
+        this.otherwise = otherwise
+    }
+}
+
 export default {
     Literal,
     Var,
     Func,
     Return, 
     For,
-    While
+    While,
+    Conditional
 }
