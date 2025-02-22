@@ -64,6 +64,14 @@ export class Set {
     }
 }
 
+export class Struct {
+    constructor(name, members) {
+        this.type = 'Struct'
+        this.name = name
+        this.members = members
+    }
+}
+
 export default {
     Literal, 
     Var,
@@ -72,5 +80,6 @@ export default {
     For,
     While,
     Conditional,
-    Set
+    Set,
+    Struct
 }
