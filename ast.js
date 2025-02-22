@@ -55,12 +55,22 @@ export class Conditional {
     }
 }
 
+export class Set {
+    constructor(caller, property, value) {
+        this.type = 'Set'
+        this.caller = caller
+        this.property = property
+        this.value = value
+    }
+}
+
 export default {
-    Literal,
+    Literal, 
     Var,
     Func,
     Return, 
     For,
     While,
-    Conditional
+    Conditional,
+    Set
 }
