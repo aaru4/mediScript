@@ -92,6 +92,14 @@ export class Parser {
         return expr
     }
 
+    unary() {
+        if (this.peekType() == TOKENS.Not) {
+            const op = this.eat(this.peekType()).value
+            return new Ast.Unary(op, this.unary())
+        }
+        return this.call()
+    }
+
     simple() {
         let token = this.eat(this.peekType())
             switch (token.type) {
