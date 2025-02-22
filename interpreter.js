@@ -5,8 +5,6 @@ export class Interpreter {
         throw new EaselError(`Runtime error: ${msg}`)
     }
 
-    run(ast, scope)
-
     inScope(scope, name) {
         return Object.keys(scope).includes(name)
     }
@@ -72,22 +70,73 @@ export class Interpreter {
             this.error('Expected expression but got statement')
         }
       }
-    
     execute(node, scope) {
-        switch(node.constructor) {
-            case Ast.Var:
-                scope[node.name] = this.evaluate(node.value, scope)
-                return scope
-            case Ast.Set:
-            case Ast.Struct:
-            case Ast.Func:
-            case Ast.Return:
-            case Ast.While:
-            case Ast.For:
-            case Ast.Conditional:
-            default:
-                this.evaluate(node, scope)
+    switch (node.constructor) {
+      case Ast.Var:
+        scope[node.name] = this.evaluate(node.value, scope)
+        return scope
+      case Ast.Set:
+        if (!this.inScope(scope, node.caller))
+          this.error(`${node.caller} is not defined in current scope`)
+        scope[node.caller][node.property] = this.evaluate(node.value, scope)
+        return scope
+      case Ast.Struct:
+        scope[node.name] = members => {
+          // Make sure therer are no invalid keys
+          let instance = {}
+          for (let key of Object.keys(members)) {
+            if (!node.members.includes(key))
+              this.error(
+                `Unexpected member ${key} found while creating instance of ${node.name}`
+              )
+            instance[key] = members[key]
+          }
+          return instance
         }
         return scope
+      case Ast.Func:
+        const func = args => {
+          let localScope = { ...scope }
+          for (let [i, param] of node.params.entries())
+            localScope[param] = args[i]
+          try {
+            this.run(node.body, localScope)
+          } catch (err) {
+            if (err instanceof ReturnException) return err.value
+            else throw err
+          }
+        }
+
+        scope[node.name] = func
+        return scope
+      case Ast.Return:
+        throw new ReturnException(this.evaluate(node.value, scope))
+      case Ast.For:
+        let localScope = {
+          ...scope,
+          [node.id]: this.evaluate(node.range[0], scope)
+        }
+        while (localScope[node.id] < this.evaluate(node.range[1], scope)) {
+          this.run(node.body, localScope)
+          localScope[node.id]++
+        }
+        break
+      case Ast.While:
+        while (this.execute(node.condition, scope)) this.run(node.body, scope)
+        break
+      case Ast.Conditional:
+        if (this.evaluate(node.condition, scope)) this.run(node.body, scope)
+        else
+          for (const conditional of node.otherwise)
+            this.execute(conditional, scope)
+        break
+      default:
+        this.evaluate(node, scope)
     }
+    return scope
+    }
+  run(ast, scope) {
+    for (const node of ast) scope = this.execute(node, scope)
+    return scope
+  }
 }
