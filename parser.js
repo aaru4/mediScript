@@ -214,3 +214,36 @@ export default {
     Array,
     Binary
 }
+
+const forStmt = () => {
+    this.eatKeyword('loop')
+    const id = this.eat(TOKENS.Identifier).value
+    this.eatKeyword('through')
+
+    this.eat(TOKENS.LeftParen)
+    const range = this.exprList()
+    if (range.length !== 2)
+        this.error(
+            range[range.length - 1],
+            `Expected (start, end) range but received more arguments than expected`
+        )
+    this.eat(TOKENS.RightParen)
+
+    this.eat(TOKENS.LeftBrace)
+    let body = []
+    while (this.peekType() !== TOKENS.RightBrace) body.push(this.stmt())
+    this.eat(TOKENS.RightBrace)
+
+    return new Ast.For(id, range, body)
+    }
+
+    const next = this.peek()
+    switch (next.type) {
+        case TOKENS.Keyword: {
+            switch (next.value) {
+                case `loop`: {
+                    return forStmt()
+                }
+            }
+        }
+    }
