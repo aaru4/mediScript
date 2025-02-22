@@ -91,6 +91,24 @@ export class Parser {
                     this.eat(TOKENS.RightParen)
                     return expr
                 }
+                case TOKENS.Keyword: {
+                    if (token.value == 'prep') {
+                        const id = this.eat(TOKENS.Identifier).value
+
+                        this.eat(TOKENS.LeftParen)
+                        let members = {}
+                        while (this.peekType() !== TOKENS.RightParen) {
+                            const member = this.eat(TOKENS.Identifier).value
+                            this.eat(TOKENS.Colon)
+                            members[member] = this.expr()
+                            if (this.peekType() == TOKENS.Comma) this.eat(TOKENS.Comma)
+                        }
+                    this.eat(TOKENS.RightParen)
+
+                    return new Ast.Instance(id, members)
+                    }
+                    break
+                }
             }
             this.error(token, "Expected expression but got " + token)
         }
