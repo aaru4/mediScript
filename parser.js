@@ -148,6 +148,9 @@ export class Parser {
                     case 'while': {
                         return whileStmt()
                     }
+                    case 'if': {
+                        return conditionalStmt('if')
+                    }
                 }
             }
             default: {
@@ -266,3 +269,24 @@ const forStmt = () => {
         return new Ast.While(condition, body)
         }
 
+        const conditionalStmt = keyword => {
+            this.eatKeyword(keyword)
+
+            let condition = new Ast.Literal(true)
+            if (keyword !== 'else') {
+                this.eat(TOKENS.LeftParen)
+                condition = this.expr()
+                this.eat(TOKENS.RightParen)
+            }
+
+            this.eat(TOKENS.LeftBrace)
+            let body = []
+            while (this.peekType() !== TOKENS.RightBrace) body.push(this.stmt())
+            this.eat(TOKENS.RightBrace)
+
+            let otherwise = []
+            while (this.peekKeyword('elif') || this.peekKeyword('else'))
+                otherwise.push(conditionalStmt(this.peek().value))
+        
+            return new Ast.Conditional(condition, body, otherwise)
+        }

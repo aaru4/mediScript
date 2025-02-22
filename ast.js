@@ -45,10 +45,12 @@ export class While {
         this.body = body
     }
 }
+
 export default {
     Literal,
     Var,
     Func,
     Return, 
-    For
+    For,
+    While
 }
