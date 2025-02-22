@@ -86,7 +86,7 @@ export class Lexer {
     }
 
     scanTokens() {
-        while (this.peek() !== '\0') this.scanTokens()
+        while (this.peek() !== '\0') this.scanToken()
         this.tokens.push(new Token(TOKENS.EOF, null, null, this.line, this.column))
         return this.tokens
     }
@@ -176,7 +176,7 @@ export class Lexer {
             case '<': {
                 if (this.match('='))
                     return this.tokens.push(
-                        new Token(TOKENS.Gte, '<=', '<=', this.line, this.column)
+                        new Token(TOKENS.Lte, '<=', '<=', this.line, this.column)
                 )
                 return this.tokens.push(
                     new Token(TOKENS.Gt, '<', '<', this.line, this.column)
