@@ -38,6 +38,13 @@ export class Return {
     }
 }
 
+export class While {
+    constructor(condition, body) {
+        this.type = 'While'
+        this.condition = condition
+        this.body = body
+    }
+}
 export default {
     Literal,
     Var,
