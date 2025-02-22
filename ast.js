@@ -13,7 +13,25 @@ export class Var {
     }
 }
 
+export class Func {
+    constructor(name, params, body) {
+        this.type = 'Func'
+        this.name = name
+        this.params = params
+        this.body = body
+    }
+}
+
+export class Return {
+    constructor(value) {
+        this.type = 'Return'
+        this.value = value
+    }
+}
+
 export default {
     Literal,
-    Var
+    Var,
+    Func,
+    Return
 }

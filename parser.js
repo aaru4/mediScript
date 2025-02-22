@@ -112,13 +112,17 @@ export class Parser {
     }
 
     stmt() {
+        const returnStmt = () => {
+            this.eatKeyword('finished')
+            return new Ast.Return(this.expr())
+        }
         const funcStmt = () => {
             this.eatKeyword('diagnose')
             const name = this.eat(TOKENS.Identifier).value
 
             let params = []
-            if (this.peekKeyword('treat')) {
-                this.eatKeyword('treat')
+            if (this.peekKeyword('needs')) {
+                this.eatKeyword('needs')
                 this.eat(TOKENS.LeftParen)
                 params = this.identifierList()
                 this.eat(TOKENS.RightParen)
@@ -135,6 +139,9 @@ export class Parser {
         switch (next.type) {
             case TOKENS.Keyword: {
                 switch(next.value) {
+                    case 'finished': {
+                        return returnStmt()
+                    }
                     case 'diagnose': {
                         return funcStmt
                     }
@@ -144,6 +151,36 @@ export class Parser {
                 return this.expr()
             }
         }
+    }
+
+    peekKeyword(keyword) {
+        if (this.peekType() !== TOKENS.Keyword || this.peek().value !== keyword)
+            return null
+        return this.peek()
+    }
+
+    eatKeyword(keyword) {
+        if (this.peekType() !== TOKENS.Keyword)
+            this.error(
+                this.peek(),
+            `Expected ${TOKENS.Keyword} but got ${this.peekType()}`
+        )
+        else if (this.peek().value !== keyword)
+            this.error(
+                this.peek(),
+                `Expected keyword ${keyword} but got keyword ${this.peek().value}`
+            )
+            return this.eat(TOKENS.Keyword)
+    }
+
+    identifierList() {
+        let identifiers = []
+        identifiers.push(this.eat(TOKENS.Identifier).value)
+        while (this.peekType() == TOKENS.Comma) {
+            this.eat(TOKENS.Comma) 
+            identifiers.push(this.eat(TOKENS.Identifier).value)
+        }
+        return identifiers 
     }
 
     exprList() {
