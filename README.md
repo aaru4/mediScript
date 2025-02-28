@@ -7,18 +7,26 @@ Scenario
 A doctor wants to create a simple AI assistant that checks patient symptoms and recommends whether further testing is needed.
 
 record patient as {
+
     name: "John Doe",
     age: 30
+    
 }
 
 assess symptoms needs {
+
     fever: true,
     cough: false,
     fatigue: true
+    
 }
 
 if symptoms.fever or symptoms.fatigue {
+
     prescribe "Further tests needed"
+    
 } else {
+
     prescribe "No immediate concern"
+    
 }
