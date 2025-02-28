@@ -1,19 +1,19 @@
-export class EaselError extends Error {
+export class MediScriptError extends Error {
     constructor(msg) {
-        super()
-        this.message = msg
+      super()
+      this.message = msg
     }
-
+  
     toString() {
-        return this.message
+      return this.message
     }
-}
-
-export default {
+  }
+  
+  export default {
     ink: args => console.log(...args),
     random: ([min, max]) => {
-        if (min >= 0 && max <= 1) return Math.random()
-            return Math.random() * (max - min + 1) + min},
-        round: number => Math.round(number)
-    }
-
+      if (min >= 0 && max <= 1) return Math.random()
+      return Math.random() * (max - min + 1) + min
+    },
+    round: number => Math.round(number)
+  }

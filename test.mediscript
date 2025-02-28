@@ -1,0 +1,4 @@
+prepare rows as 64
+prepare cols as 64
+
+brush Cell has { x, y, live }

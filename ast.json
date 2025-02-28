@@ -1,0 +1,27 @@
+[
+  {
+    "type": "Var",
+    "name": "rows",
+    "value": {
+      "type": "Literal",
+      "value": 64
+    }
+  },
+  {
+    "type": "Var",
+    "name": "cols",
+    "value": {
+      "type": "Literal",
+      "value": 64
+    }
+  },
+  {
+    "type": "Struct",
+    "name": "Cell",
+    "members": [
+      "x",
+      "y",
+      "live"
+    ]
+  }
+]
