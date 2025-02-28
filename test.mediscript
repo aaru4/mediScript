@@ -1,4 +1,16 @@
-prepare rows as 64
-prepare cols as 64
+record patient as {
+    name: "John Doe",
+    age: 30
+}
 
-brush Cell has { x, y, live }
+assess symptoms needs {
+    fever: true,
+    cough: false,
+    fatigue: true
+}
+
+if symptoms.fever or symptoms.fatigue {
+    prescribe "Further tests needed"
+} else {
+    prescribe "No immediate concern"
+}

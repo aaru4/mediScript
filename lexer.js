@@ -37,6 +37,7 @@ export const KEYWORDS = {
   prep: 'prep',
   has: 'has', // Structs
   diagnose: 'diagnose',
+  prescribe: 'prescribe',
   needs: 'needs',
   finished: 'finished', // Functions
   loop: 'loop',

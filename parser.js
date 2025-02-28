@@ -218,6 +218,12 @@ export class Parser {
       return new Ast.Struct(name, members)
     }
 
+    const prescribeStmt = () => {
+        this.eatKeyword('prescribe');
+        const message = this.expr();  
+        return new Ast.Prescribe(message);
+    };
+
     const funcStmt = () => {
       this.eatKeyword('diagnose')
       const name = this.eat(TOKENS.Identifier).value
@@ -314,6 +320,9 @@ export class Parser {
           }
           case 'diagnose': {
             return funcStmt()
+          }
+          case 'prescribe': {
+            return prescribeStmt()
           }
           case 'finished': {
             return returnStmt()
