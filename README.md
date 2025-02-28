@@ -1,4 +1,4 @@
-# mediScript
+# MediScript
 MediScript is a custom-built, domain-specific language designed to make coding accessible to non-technical healthcare professionals. It allows doctors, nurses, and medical researchers to automate tasks, analyze patient data, and define AI-driven workflows without needing advanced programming knowledge.
 
 By using simple, readable syntax, MediScript democratizes AI and automation in healthcare, helping medical professionals focus on patient care instead of complex code.
